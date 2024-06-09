@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Speed Calendar</title>
+        <link href="/assets/css/index.css" rel="stylesheet" />
+        <link href="/assets/css/home.css" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <script src="/assets/js/home-anime.js"></script>
+    </head>
+    <body>
+        <%- include("../other/icon.svg") %> <%-
+        include("./elements/hamburger.ejs") %> <% if (already_login) { %>
+        <a
+            class="button login_or_play_button"
+            id="loggined_play_button"
+            href="/play/"
+            >Play</a
+        >
+        <% } else { %>
+        <a
+            class="button login_or_play_button"
+            id="login_button"
+            href="/accounts/"
+            >Login</a
+        >
+        <span id="or" class="login_or_play_button">or</span>
+        <a class="button login_or_play_button" id="play_button" href="/play/"
+            >Play Now</a
+        >
+        <% } %>
+        <main>
+            <div class="container">
+                <h2>About</h2>
+                <div class="container-inner">
+                    SpeedCalendar is an mental training activity in relation to
+                    Calendar. We compete our speed (time) to calculate the day
+                    of the week. This also helps our daily life. We will not get
+                    dates mixed up any more.
+                </div>
+            </div>
+            <div class="container">
+                <h2>SpeedCalendar Print</h2>
+                <div class="container-inner">
+                    This is a web application for SpeedCalendar competitions on
+                    paper. This is available without account registration.<br /><br />
+                    <a class="button" href="/printer/" target="_blank">Open</a>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

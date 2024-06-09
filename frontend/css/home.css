@@ -1,0 +1,77 @@
+@keyframes loadAnimation {
+    0% {
+        stroke-dashoffset: 1000px;
+    }
+    25% {
+        stroke-width: 2.94518;
+    }
+    50% {
+        stroke-dashoffset: 0px;
+    }
+    60% {
+        stroke-width: 7;
+    }
+    100% {
+        stroke-width: 2.94518;
+    }
+}
+
+#logo {
+    position: absolute;
+    font-size: 12vmin;
+    display: block;
+    width: 80vmax;
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+    top: 50vh;
+    left: 50vw;
+    transform: translateX(-50%) translateY(-50%);
+}
+#logo_text {
+    stroke-width: 10px;
+    stroke-dasharray: 1000px;
+    animation: loadAnimation 3s;
+}
+main {
+    position: absolute;
+    top: 100vh;
+    text-align: center;
+    max-width: 600px;
+    left: 50vw;
+    transform: translateX(-50%);
+}
+
+h2 {
+    font-size: 5vmin;
+}
+
+.container {
+    border-top: 1px solid rgb(184, 173, 159);
+    margin-bottom: 100px;
+}
+.container-inner {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.login_or_play_button {
+    position: absolute;
+    display: inline-block;
+    top: 70vh;
+    transform: translateX(-50%);
+}
+
+#loggined_play_button {
+    left: 50vw;
+}
+#login_button {
+    left: calc(50vw - 70px);
+}
+#or {
+    font-size: 20pt;
+    left: 50vw;
+}
+#play_button {
+    left: calc(50vw + 70px);
+}

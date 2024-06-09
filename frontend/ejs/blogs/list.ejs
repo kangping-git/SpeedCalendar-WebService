@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Blog List</title>
+        <link href="/assets/css/index.css" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <a class="card" href="/editor/edit?type=create">
+            <img
+                class="thumbnail"
+                src="/assets/other/a9d5ac13-b47f-492a-b87f-9aa511331bd9.jpeg"
+                width="230"
+                height="150"
+            />
+            <span class="title">create</span>
+        </a>
+        <% for (let i of blogList) { %>
+        <a class="card" href="/editor/edit?id=<%= i.id %>">
+            <img
+                class="thumbnail"
+                src="<%= i.banner %>"
+                width="230"
+                height="150"
+            />
+            <span class="title"><%= i.title %></span>
+        </a>
+        <% } %>
+    </body>
+</html>

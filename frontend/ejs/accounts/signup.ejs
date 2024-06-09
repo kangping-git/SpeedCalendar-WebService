@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login</title>
+        <link href="/assets/css/index.css" rel="stylesheet" />
+        <link href="/assets/css/login.css" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+    </head>
+    <body>
+        <main>
+            <h1>signup</h1>
+            <% if (msg) { %>
+            <div class="alert"><%= msg %></div>
+            <% } %>
+            <form
+                method="post"
+                action="/accounts/signup"
+                enctype="application/x-www-form-urlencoded"
+            >
+                <label for="username">username: </label>
+                <input
+                    id="username"
+                    name="username"
+                    pattern="^[a-zA-Z0-9_]{3,50}$"
+                /><br />
+                <label for="mail_address">mailAddress: </label>
+                <input
+                    id="mail_address"
+                    name="mail_address"
+                    type="email"
+                    maxlength="190"
+                /><br />
+                <label for="login_password">password: </label>
+                <input
+                    id="login_password"
+                    type="password"
+                    name="password"
+                    maxlength="200"
+                    minlength="5"
+                /><br />
+                <label for="retype_password">retype your password: </label>
+                <input
+                    id="retype_password"
+                    type="password"
+                    name="password_retype"
+                    maxlength="200"
+                    minlength="5"
+                /><br /><br />
+                <div class="cf-turnstile" data-sitekey="<%= siteKey %>"></div>
+                <br />
+                <button class="button" id="login" type="submit">signup</button>
+            </form>
+        </main>
+    </body>
+</html>

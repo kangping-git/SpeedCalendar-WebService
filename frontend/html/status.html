@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>server status</title>
+        <script>
+            window.addEventListener("load", async () => {
+                let data = [];
+                let cores = document.getElementById("cores");
+                async function getData(first = false) {
+                    let stopped = false;
+                    let timeout = setTimeout(() => {
+                        getData();
+                        stopped = true;
+                    }, 500);
+                    data = await (await fetch("./cores")).json();
+                    clearTimeout(timeout);
+                    if (stopped) {
+                        return;
+                    }
+                    if (first) {
+                        let html = "";
+                        for (let i = 0; i < data.length; ++i) {
+                            html += `<details>
+                                        <summary>core ${
+                                            i + 1
+                                        } <div class="progress_parent"><span class="progress" id="progress_${i}" style="width:${
+                                (data[i].uptime / data[i].core_respawn_time) *
+                                300
+                            }px"></span><span class="progress2" id="progress2_${i}" style="width:${
+                                300 -
+                                (data[i].uptime / data[i].core_respawn_time) *
+                                    300
+                            }px"></span><span class="progress_percent" id="progress_percent_${i}">${(
+                                (data[i].uptime / data[i].core_respawn_time) *
+                                100
+                            ).toFixed(2)}%</span></div></summary>
+                                        access count:<span id="access_count_${i}">${
+                                data[i].count
+                            }</span><br>
+                                        uptime:<span id="uptime_${i}">${(
+                                data[i].uptime /
+                                60 /
+                                1000
+                            ).toFixed(1)}</span>m<br>
+                                        next respawn:<span id="respawn_time_${i}">${(
+                                (data[i].core_respawn_time - data[i].uptime) /
+                                60000
+                            ).toFixed(1)}</span>m<br>
+                                        respawn count:<span id="respawn_count_${i}">${
+                                data[i].restart_count
+                            }</span>
+                                    </details>`;
+                        }
+                        cores.innerHTML = html;
+                    } else {
+                        for (let i = 0; i < data.length; ++i) {
+                            let uptime = document.getElementById("uptime_" + i);
+                            uptime.innerText = (
+                                data[i].uptime /
+                                60 /
+                                1000
+                            ).toFixed(1);
+                            let core_respawn_time = document.getElementById(
+                                "respawn_time_" + i
+                            );
+                            core_respawn_time.innerText = (
+                                (data[i].core_respawn_time - data[i].uptime) /
+                                60000
+                            ).toFixed(1);
+                            document.getElementById(
+                                "respawn_count_" + i
+                            ).innerText = data[i].restart_count;
+                            document.getElementById(
+                                "access_count_" + i
+                            ).innerText = data[i].count;
+                            document.getElementById(
+                                "progress_" + i
+                            ).style.width =
+                                (data[i].uptime / data[i].core_respawn_time) *
+                                    300 +
+                                "px";
+                            document.getElementById(
+                                "progress2_" + i
+                            ).style.width =
+                                300 -
+                                (data[i].uptime / data[i].core_respawn_time) *
+                                    300 +
+                                "px";
+                            document.getElementById(
+                                "progress_percent_" + i
+                            ).innerText =
+                                (
+                                    (data[i].uptime /
+                                        data[i].core_respawn_time) *
+                                    100
+                                ).toFixed(2) + "%";
+                        }
+                    }
+                    setTimeout(() => {
+                        getData();
+                    }, 1000);
+                }
+                await getData(true);
+            });
+        </script>
+        <style>
+            html,
+            body {
+                background-color: rgb(24, 24, 24);
+                margin: 0;
+                padding: 0;
+                color: lightgreen;
+                user-select: none;
+            }
+            .progress {
+                position: relative;
+                top: -17px;
+                margin-left: 200px;
+                display: inline-block;
+                background-color: lightgreen;
+                height: 15px;
+            }
+            .progress2 {
+                position: relative;
+                top: -17px;
+                display: inline-block;
+                background-color: gray;
+                height: 15px;
+            }
+            .progress_parent {
+                position: absolute;
+                left: 200px;
+            }
+            .progress_percent {
+                position: relative;
+                top: -17px;
+                left: 5px;
+            }
+            summary {
+                position: relative;
+                left: -20px;
+            }
+            details {
+                margin-left: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="cores"></div>
+    </body>
+</html>

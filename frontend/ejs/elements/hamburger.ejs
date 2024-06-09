@@ -1,0 +1,16 @@
+<input type="checkbox" id="hamburger_checkbox" />
+<label id="hamburger_label"></label>
+<div id="hamburger_content">
+    <ul>
+        <li><a href="/">home</a></li>
+        <li><a href="/accounts/logout/">logout</a></li>
+    </ul>
+</div>
+<div id="hamburger_fixed"></div>
+<script>
+    let hamburger_fixed = document.getElementById("hamburger_fixed");
+    let hamburger_checkbox = document.getElementById("hamburger_checkbox");
+    hamburger_fixed.addEventListener("click", () => {
+        hamburger_checkbox.checked = false;
+    });
+</script>

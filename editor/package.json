@@ -1,0 +1,30 @@
+{
+    "devDependencies": {
+        "@types/editorjs__header": "^2.6.3",
+        "ts-loader": "^9.5.1",
+        "typescript": "^5.4.5",
+        "webpack": "^5.91.0",
+        "webpack-cli": "^5.1.4"
+    },
+    "scripts": {
+        "build": "webpack --watch"
+    },
+    "dependencies": {
+        "@editorjs/checklist": "^1.6.0",
+        "@editorjs/code": "^2.9.0",
+        "@editorjs/delimiter": "^1.4.0",
+        "@editorjs/editorjs": "^2.29.1",
+        "@editorjs/embed": "^2.7.1",
+        "@editorjs/header": "^2.8.1",
+        "@editorjs/image": "^2.9.0",
+        "@editorjs/inline-code": "^1.5.0",
+        "@editorjs/link": "^2.6.2",
+        "@editorjs/list": "^1.9.0",
+        "@editorjs/marker": "^1.4.0",
+        "@editorjs/quote": "^2.6.0",
+        "@editorjs/raw": "^2.5.0",
+        "@editorjs/simple-image": "^1.6.0",
+        "@editorjs/table": "^2.3.0",
+        "@editorjs/warning": "^1.4.0"
+    }
+}

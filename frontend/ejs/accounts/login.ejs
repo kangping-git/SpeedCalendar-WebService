@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login</title>
+        <link href="/assets/css/index.css" rel="stylesheet" />
+        <link href="/assets/css/login.css" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+    </head>
+    <body>
+        <main>
+            <h1>login</h1>
+            <% if (msg) { %>
+            <div class="alert"><%= msg %></div>
+            <% } %>
+            <form
+                method="post"
+                action="/accounts/login"
+                enctype="application/x-www-form-urlencoded"
+            >
+                <label for="login_username">username: </label>
+                <input id="login_username" name="username" /><br />
+                <label for="login_password">password: </label>
+                <input
+                    id="login_password"
+                    type="password"
+                    name="password"
+                /><br /><br />
+                <div class="cf-turnstile" data-sitekey="<%= siteKey %>"></div>
+                <br />
+                <a href="/accounts/signup/">or create an account</a><br /><br />
+                <button class="button" id="login" type="submit">Login</button>
+            </form>
+        </main>
+    </body>
+</html>

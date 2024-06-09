@@ -1,0 +1,55 @@
+@keyframes move {
+    0% {
+        left: 50vw;
+    }
+    50% {
+        width: 100vw;
+        left: 0px;
+    }
+    100% {
+        width: 50vw;
+        left: 0px;
+    }
+}
+@keyframes move2 {
+    0% {
+        left: 0px;
+    }
+    50% {
+        width: 100vw;
+        left: 0px;
+    }
+    100% {
+        width: 50vw;
+        left: 50vw;
+    }
+}
+
+main {
+    width: 100vw;
+}
+
+input {
+    font-family: "Rajdhani", sans-serif;
+    font-weight: 500;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    text-align: left;
+    font-size: 12pt;
+    border-bottom: 1px solid rgb(54, 51, 46);
+    width: 100%;
+    outline: none;
+    width: 200px;
+}
+
+.alert {
+    background-color: rgb(255, 140, 140);
+    border: 2px solid rgb(255, 90, 90);
+    color: black;
+    padding: 5px;
+    width: 80vw;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Printer</title>
+        <link href="/assets/css/index.css" rel="stylesheet" />
+        <link href="/assets/css/print.css" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <script src="/assets/js/print.js"></script>
+    </head>
+    <body>
+        <main>
+            <h1>SpeedCalendar Print</h1>
+            <h2>Prints</h2>
+            <table>
+                <thead>
+                    <th colspan="2">Seed</th>
+                </thead>
+                <tbody id="prints_data"></tbody>
+            </table>
+            <label for="repage_flg" id="label_repage_flg">New Page On Answer: </label
+            ><input type="checkbox" onchange="update_setting()"
+            id="repage_flg" class="switch"><label for="repage_flg"
+            class="switch-main"></label></span><br />
+            <span class="button" id="generate">Generate</span><br />
+            <span class="button" id="print">Print</span><br />
+        </main>
+        <div id="content" class="content"></div>
+    </body>
+</html>
