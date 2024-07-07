@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SpeedCalendar Classic</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <script src="/assets/js/play/classic/index.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <style type="text/css">
+            @font-face {
+                font-family: "GGL-1";
+                src: url("/assets/other/TitilliumWeb-SemiBold.ttf");
+            }
+
+            html {
+                font-family: "GGL-1";
+                user-select: none;
+                -ms-user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+            }
+
+            .input-field {
+                display: inline-block;
+                width: 180px;
+            }
+
+            .button {
+                background-color: #dae3f3;
+                padding: 2px;
+                border-radius: 4px;
+                color: #2f456f;
+                display: inline-block;
+                width: 35px;
+                text-align: center;
+            }
+
+            #Q {
+                height: 200px;
+                white-space: nowrap;
+            }
+
+            #Q-1 {
+                height: 200px;
+            }
+
+            .Q_1 {
+                display: inline-block;
+                width: 150px;
+                color: black;
+                font-size: 15pt;
+            }
+
+            .Q_2 {
+                display: inline-block;
+                width: 100px;
+                color: black;
+                font-size: 15pt;
+            }
+
+            .Q_3 {
+                display: inline-block;
+                width: 100px;
+                font-size: 15pt;
+            }
+        </style>
+    </head>
+    <body style="text-align: center">
+        <a id="timer" style="font-size: 28pt; color: black">00:00.000</a>
+        <div id="Q-1">
+            <a id="hit-any-key" style="color: black; font-size: 20pt">Hit Any Key</a>
+            <div id="Q"></div>
+        </div>
+        <div>
+            <div class="button" onclick="key_down(0)">
+                <a id="button-0" style="font-size: 10pt; color: #2f456f">SUN</a><br /><a style="font-size: 15pt; color: #2f456f">0</a>
+            </div>
+            &nbsp;
+            <div class="button" onclick="key_down(1)">
+                <a id="button-1" style="font-size: 10pt; color: #2f456f">MON</a><br /><a style="font-size: 15pt; color: #2f456f">1</a>
+            </div>
+            &nbsp;
+            <div class="button" onclick="key_down(2)">
+                <a id="button-2" style="font-size: 10pt; color: #2f456f">TUE</a><br /><a style="font-size: 15pt; color: #2f456f">2</a>
+            </div>
+            &nbsp;
+            <div class="button" onclick="key_down(3)">
+                <a id="button-3" style="font-size: 10pt; color: #2f456f">WED</a><br /><a style="font-size: 15pt; color: #2f456f">3</a>
+            </div>
+            &nbsp;
+            <div class="button" onclick="key_down(4)">
+                <a id="button-4" style="font-size: 10pt; color: #2f456f">THU</a><br /><a style="font-size: 15pt; color: #2f456f">4</a>
+            </div>
+            &nbsp;
+            <div class="button" onclick="key_down(5)">
+                <a id="button-5" style="font-size: 10pt; color: #2f456f">FRI</a><br /><a style="font-size: 15pt; color: #2f456f">5</a>
+            </div>
+            &nbsp;
+            <div class="button" onclick="key_down(6)">
+                <a id="button-6" style="font-size: 10pt; color: #2f456f">SAT</a><br /><a style="font-size: 15pt; color: #2f456f">6</a>
+            </div>
+            &nbsp;
+        </div>
+        <div class="container1">
+            <div class="input-field col s6 m2">
+                <select id="targetLang">
+                    <option value="en" selected>English</option>
+                    <option value="jp">Japanese</option>
+                    <option value="cn">Chinese</option>
+                    <option value="kr">Korean</option>
+                    <option value="sp">Spanish</option>
+                    <option value="la">Latin</option>
+                    <option value="it">Italian</option>
+                    <option value="de">German</option>
+                </select>
+                <label for="targetLang">Language</label>
+            </div>
+            <div class="input-field col s6 m2">
+                <select id="targetmode">
+                    <option value="long" selected>Competition</option>
+                    <option value="mid">Birthday</option>
+                    <option value="short">Real Life</option>
+                    <option value="longlong">Very Very Long Date</option>
+                    <option value="era">Japanese Gengou</option>
+                    <option value="era2">Japanese Gengou Max</option>
+                </select>
+                <label for="targetmode">Mode</label>
+            </div>
+        </div>
+        <div class="container1">
+            <div class="input-field col s6">
+                <select id="displaymode">
+                    <option value="display" selected>Display</option>
+                    <option value="concentration">Concentration</option>
+                </select>
+                <label for="displaymode">Timer Display</label>
+            </div>
+            <div class="input-field col s6">
+                <select id="weeksta" onchange="updateDayString()">
+                    <option value="startmon" selected>on Mon (ISO8601)</option>
+                    <option value="startsun">on Sun</option>
+                </select>
+                <label for="weeksta">Week starts</label>
+            </div>
+        </div>
+        <div class="container1">
+            <div class="input-field col s3">
+                <i class="material-icons prefix">account_circle</i>
+                <input id="name_id" type="text" class="validate" value="<%= user %>" disabled />
+                <label for="name_id">Nickname</label>
+            </div>
+            <div class="input-field col s3">
+                <i class="material-icons prefix">mode_edit</i>
+                <input id="icon_telephone" type="text" class="autocompvare" />
+                <label for="icon_telephone">any comments?</label>
+            </div>
+        </div>
+        <div id="str70"></div>
+        <div id="container3" style="margin-left: auto; margin-right: auto">
+            <span id="ggl_place"><a class="waves-effect waves-light btn-small <% if (!user) { %> disabled <% } %>" onclick="submit_result()">Submit</a></span>
+            <span id="tw_place"><a class="waves-effect waves-light btn-small" onclick="submit_twitter()">Twitter</a></span>
+            <span id="next_place"><a class="waves-effect waves-light btn-small blue" onclick="key_down(9)">Next (or press"9")</a></span>
+        </div>
+        <a id="str72" href="/play/games/classic/ranking/">ranking</a><br />
+        <div style="text-align: center; color: black" id="links">
+            <a id="str73" href="http://speed-calendar.com/?page_id=134" target="_blank" rel="noopener noreferrer">powerd by SpeedCalendar</a>
+        </div>
+        <script>
+            window.addEventListener("DOMContentLoaded", () => {
+                const elems = document.querySelectorAll("select");
+                const instances = M.FormSelect.init(elems);
+            });
+        </script>
+    </body>
+</html>

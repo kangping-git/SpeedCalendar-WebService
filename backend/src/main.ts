@@ -9,10 +9,7 @@ import { config } from "dotenv";
 config();
 
 let consoleLogTemp = console.log;
-let writeStream = fs.createWriteStream(
-    path.join(__dirname, "../logs/", "out.log"),
-    { encoding: "utf-8", flags: "a" }
-);
+let writeStream = fs.createWriteStream(path.join(__dirname, "../logs/", "out.log"), { encoding: "utf-8", flags: "a" });
 
 console.log = async (type: string, ...message) => {
     let time = new Date();
@@ -44,7 +41,7 @@ console.log = async (type: string, ...message) => {
 };
 
 const cores = os.cpus().length;
-let use_cores = Math.max(cores - 1, 1);
+let use_cores = Math.max(cores - 2, 1);
 if (process.env.max_core) {
     use_cores = Number(process.env.max_core);
 }
@@ -53,13 +50,9 @@ let sessionData: Map<string, string> = new Map();
 
 let role: Map<string, { role: bigint; lastGet: number }> = new Map();
 
-function fork(core: number, restart_count: number) {
+function fork(core: number, restart_count: number, websocketServer: boolean) {
     let core_respawn_time =
-        (Math.random() *
-            (Number(process.env.respawn_max_time) -
-                Number(process.env.respawn_min_time)) +
-            Number(process.env.respawn_min_time)) *
-        1000;
+        (Math.random() * (Number(process.env.respawn_max_time) - Number(process.env.respawn_min_time)) + Number(process.env.respawn_min_time)) * 1000;
     const worker = cluster.fork({
         core: core,
         cores: use_cores,
@@ -88,16 +81,10 @@ function fork(core: number, restart_count: number) {
                 case "getRole":
                     let roleCache = role.get(message.user);
                     let returnRole: bigint = 0n;
-                    if (
-                        roleCache &&
-                        roleCache.lastGet + 1000 * 60 * 30 > Date.now()
-                    ) {
+                    if (roleCache && roleCache.lastGet + 1000 * 60 * 30 > Date.now()) {
                         returnRole = roleCache.role;
                     } else {
-                        let ret = (await connection.query(
-                            "select role from users where user_name=?",
-                            message.user
-                        )) as mysql.RowDataPacket[];
+                        let ret = (await connection.query("select role from users where user_name=?", message.user)) as mysql.RowDataPacket[];
                         returnRole = BigInt(ret[0][0].role);
                         role.set(message.user, {
                             lastGet: Date.now(),
@@ -127,7 +114,7 @@ function fork(core: number, restart_count: number) {
     });
     worker.on("exit", () => {
         console.log("process_restart");
-        fork(core, restart_count + 1);
+        fork(core, restart_count + 1, websocketServer);
     });
 }
 
@@ -151,8 +138,9 @@ cluster.setupPrimary({
 cluster.schedulingPolicy = cluster.SCHED_NONE;
 process.stdout.write("\x1bc");
 
-for (let i = 0; i < use_cores; ++i) {
-    fork(i, 0);
+fork(0, 0, true);
+for (let i = 1; i < use_cores + 1; ++i) {
+    fork(i, 0, false);
 }
 
 let last = Date.now() - 1000;

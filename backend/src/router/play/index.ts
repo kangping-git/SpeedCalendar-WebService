@@ -7,11 +7,17 @@ let $module: responses = {
             method: "GET",
             path: "/",
             callback: (req, res) => {
-                console.log("loginUser", "user", req.user);
                 res.render("ejs/play/play.ejs", {
                     already_login: req.user != void 0 && req.user != "",
                     user: req.user,
                 });
+            },
+        },
+        {
+            method: "GET",
+            path: "/games/i18n.js",
+            callback: (req, res) => {
+                res.sendFile("/js/play/i18n.js");
             },
         },
     ],

@@ -31,7 +31,10 @@ console.log = async (type: string, ...message) => {
             .map((value, index) => {
                 if (index % 2 == 0) {
                     a[value] = message[index + 1];
-                    return " " + value + ":" + message[index + 1];
+                    if (value[0] != ".") {
+                        return " " + value + ":" + message[index + 1];
+                    }
+                    return "";
                 } else {
                     return "";
                 }

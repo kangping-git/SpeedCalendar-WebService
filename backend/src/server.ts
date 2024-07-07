@@ -4,19 +4,15 @@ import path_posix from "node:path/posix";
 import http from "http";
 import https from "https";
 import ejs from "ejs";
-import {
-    req_extends,
-    res_extends,
-    responses,
-    routingData,
-} from "./types/server.module";
+import { req_extends, res_extends, responses, routingData } from "./types/server.module";
 import mysql from "mysql2/promise";
 import { createReadStream } from "node:fs";
 import { initMailer, mailer } from "./utils/mail";
 import { getRole, sessionGet, sessionSet } from "./utils/IPC";
 import { createSalt } from "./utils/createSalt";
+import { Server } from "ws";
 
-let server;
+let server: https.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 let connection: mysql.Connection;
 
 let count = 0;
@@ -61,9 +57,7 @@ export async function init() {
             let base = $module.basePath;
             $module.route.forEach((value) => {
                 if (typeof value.path == "string") {
-                    routingData.TextBase[
-                        value.method + "#" + path_posix.join(base, value.path)
-                    ] = {
+                    routingData.TextBase[value.method + "#" + path_posix.join(base, value.path)] = {
                         callback: value.callback,
                         isAdminPage: $module.isAdminPages ? true : false,
                     };
@@ -87,10 +81,7 @@ export async function init() {
         key: await fs.readFile(path.join(__dirname, "../keys/server.key")),
         cert: await fs.readFile(path.join(__dirname, "../keys/server.crt")),
     };
-    let serverHandle = async (
-        req: http.IncomingMessage,
-        res: http.ServerResponse<http.IncomingMessage>
-    ) => {
+    let serverHandle = async (req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage>) => {
         count += 1;
         let start = performance.now();
         let cookieRaw = req.headers.cookie as string;
@@ -101,18 +92,19 @@ export async function init() {
         let session = cookie.get("session") as string;
         if (!session) {
             session = createSalt();
-            res.setHeader(
-                "set-cookie",
-                "session=" +
-                    encodeURIComponent(session) +
-                    "; Max-Age:" +
-                    60 * 60 * 24 * 365 +
-                    " ; Path=/; HttpOnly"
-            );
+            res.setHeader("set-cookie", "session=" + encodeURIComponent(session) + "; Max-Age:" + 60 * 60 * 24 * 365 + "; Path=/; HttpOnly");
             sessionSet(session, "");
         }
 
         let user = (await sessionGet(session)).data;
+        let ip = "0.0.0.0";
+        if (typeof req.headers["x-forwarded-for"] == "string") {
+            ip = req.headers["x-forwarded-for"];
+        } else if (req.connection && req.connection.remoteAddress) {
+            ip = req.connection.remoteAddress;
+        } else if (req.socket && req.socket.remoteAddress) {
+            ip = req.socket.remoteAddress;
+        }
 
         res.on("finish", () => {
             console.log(
@@ -127,17 +119,12 @@ export async function init() {
                 (performance.now() - start).toFixed(5),
                 "core",
                 process.env.core,
-                "session",
-                session
+                ".session",
+                session,
+                ".ip",
+                ip
             );
         });
-        let ip = "0.0.0.0";
-        if (req.connection && req.connection.remoteAddress) {
-            ip = req.connection.remoteAddress;
-        }
-        if (req.socket && req.socket.remoteAddress) {
-            ip = req.socket.remoteAddress;
-        }
         let extends_req: req_extends = Object.assign(req, {
             URLObj: new URL("http://" + req.headers.host + req.url),
             url: "",
@@ -152,27 +139,20 @@ export async function init() {
         };
         let extends_res: res_extends = Object.assign(res, {
             render: (file: string, context: object) => {
-                ejs.renderFile(
-                    path.join(__dirname, "../../frontend/", file),
-                    Object.assign(renderOptions, context)
-                ).then((result) => {
+                ejs.renderFile(path.join(__dirname, "../../frontend/", file), Object.assign(renderOptions, context)).then((result) => {
                     res.setHeader("content-type", "text/html; charset=utf-8");
                     res.end(result);
                 });
             },
             renderText: (text: string, context: object) => {
                 res.setHeader("content-type", "text/html; charset=utf-8");
-                res.end(
-                    ejs.render(text, Object.assign(renderOptions, context))
-                );
+                res.end(ejs.render(text, Object.assign(renderOptions, context)));
             },
             json: (object: object) => {
                 res.end(JSON.stringify(object));
             },
             sendFile: (file: string) => {
-                const readStream = createReadStream(
-                    path.join(__dirname, "../../frontend/", file)
-                );
+                const readStream = createReadStream(path.join(__dirname, "../../frontend/", file));
                 readStream.pipe(res);
             },
             auth: {
@@ -205,18 +185,9 @@ export async function init() {
                 });
             },
         });
-        if (
-            `${extends_req.method}#${extends_req.url}` in routingData.TextBase
-        ) {
-            if (
-                !routingData.TextBase[
-                    `${extends_req.method}#${extends_req.url}`
-                ].isAdminPage ||
-                (await extends_res.auth.permission()).has("admin")
-            ) {
-                routingData.TextBase[
-                    `${extends_req.method}#${extends_req.url}`
-                ].callback(extends_req, extends_res);
+        if (`${extends_req.method}#${extends_req.url}` in routingData.TextBase) {
+            if (!routingData.TextBase[`${extends_req.method}#${extends_req.url}`].isAdminPage || (await extends_res.auth.permission()).has("admin")) {
+                routingData.TextBase[`${extends_req.method}#${extends_req.url}`].callback(extends_req, extends_res);
                 return;
             }
         }
@@ -225,10 +196,7 @@ export async function init() {
             return value.checker(extends_req.url as string);
         });
         if (filter.length) {
-            if (
-                !filter[0].isAdminPage ||
-                (await extends_res.auth.permission()).has("admin")
-            ) {
+            if (!filter[0].isAdminPage || (await extends_res.auth.permission()).has("admin")) {
                 filter[0].callback(extends_req, extends_res);
                 return;
             }
@@ -237,24 +205,21 @@ export async function init() {
             return value.checker.exec(extends_req.url as string);
         });
         if (filter2.length) {
-            if (
-                !filter2[0].isAdminPage ||
-                (await extends_res.auth.permission()).has("admin")
-            ) {
+            if (!filter2[0].isAdminPage || (await extends_res.auth.permission()).has("admin")) {
                 filter2[0].callback(extends_req, extends_res);
                 return;
             }
         }
         extends_res.errorPage(404);
     };
-    server = https.createServer(options, serverHandle);
-    server.listen(443);
-    server.on("listening", () => {
-        uptime = Date.now();
-        updateInfo();
-        setInterval(updateInfo, 1000);
+    process.on("SIGINT", () => {
+        server.close((err: any) => {
+            if (err) {
+                console.error(err);
+                process.exit(1);
+            }
+        });
     });
-
     let server_redirect = http.createServer((req, res) => {
         if (process.env.needSSL == void 0 || process.env.needSSL == "true") {
             res.statusCode = 308;
@@ -266,4 +231,11 @@ export async function init() {
         }
     });
     server_redirect.listen(80);
+    server = https.createServer(options, serverHandle);
+    server.listen(443);
+    server.on("listening", () => {
+        uptime = Date.now();
+        updateInfo();
+        setInterval(updateInfo, 1000);
+    });
 }

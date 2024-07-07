@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SpeedCalendar Classic Ranking</title>
+        <script src="/assets/js/play/classic/ranking.js"></script>
+        <style>
+            @font-face {
+                font-family: "GGL-1";
+                src: url("/assets/other/TitilliumWeb-SemiBold.ttf");
+            }
+            html {
+                font-family: "GGL-1";
+                user-select: none;
+                -ms-user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+            }
+            body {
+                width: 100vw;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 0;
+            }
+            table {
+                width: 100%;
+                border-spacing: 0px;
+            }
+            th {
+                border-top: 1px solid rgb(177, 177, 177);
+            }
+            td,
+            th {
+                border-bottom: 1px solid rgb(177, 177, 177);
+                border-right: 1px solid rgb(177, 177, 177);
+            }
+            td:first-child,
+            th:first-child {
+                border-left: 1px solid rgb(177, 177, 177);
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Ranking</h2>
+        Type:
+        <select id="typeSelect">
+            <option value="0" selected>Competition</option>
+            <option value="1">Birthday</option>
+            <option value="2">Real Life</option>
+            <option value="3">Ver Very Long Date</option>
+            <option value="4">Japanese Gengou</option>
+            <option value="5">Japanese Gengou Max</option>
+        </select>
+        <table>
+            <thead>
+                <tr>
+                    <th>rank</th>
+                    <th>user</th>
+                    <th>time</th>
+                    <th>date</th>
+                    <th>comment</th>
+                </tr>
+            </thead>
+            <tbody id="data"></tbody>
+        </table>
+    </body>
+</html>
