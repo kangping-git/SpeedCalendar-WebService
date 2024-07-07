@@ -12,7 +12,6 @@ import { getRole, sessionGet, sessionSet } from "./utils/IPC";
 import { createSalt } from "./utils/createSalt";
 import { Server } from "ws";
 
-let server: https.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
 let connection: mysql.Connection;
 
 let count = 0;
@@ -77,10 +76,6 @@ export async function init() {
             });
         }
     }
-    const options = {
-        key: await fs.readFile(path.join(__dirname, "../keys/server.key")),
-        cert: await fs.readFile(path.join(__dirname, "../keys/server.crt")),
-    };
     let serverHandle = async (req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage>) => {
         count += 1;
         let start = performance.now();
@@ -212,28 +207,11 @@ export async function init() {
         }
         extends_res.errorPage(404);
     };
-    process.on("SIGINT", () => {
-        server.close((err: any) => {
-            if (err) {
-                console.error(err);
-                process.exit(1);
-            }
-        });
-    });
     let server_redirect = http.createServer((req, res) => {
-        if (process.env.needSSL == void 0 || process.env.needSSL == "true") {
-            res.statusCode = 308;
-            res.statusMessage = "Permanent Redirect";
-            res.setHeader("Location", "https://" + req.headers.host + req.url);
-            res.end("");
-        } else {
-            serverHandle(req, res);
-        }
+        serverHandle(req, res);
     });
     server_redirect.listen(80);
-    server = https.createServer(options, serverHandle);
-    server.listen(443);
-    server.on("listening", () => {
+    server_redirect.on("listening", () => {
         uptime = Date.now();
         updateInfo();
         setInterval(updateInfo, 1000);
